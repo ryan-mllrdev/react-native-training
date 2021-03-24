@@ -1,6 +1,7 @@
 /* eslint-disable prettier/prettier */
 import {StyleSheet} from 'react-native';
 
+const expiredColor = '#dc143c';
 const homeScreenStyles = StyleSheet.create({
   separator: {height: 10},
   todoList: {
@@ -23,7 +24,12 @@ const homeScreenStyles = StyleSheet.create({
   },
   textExpired: {
     textDecorationLine: 'line-through',
-    color: '#dc143c',
+    color: expiredColor,
+  },
+  daysExpired: {
+    color: expiredColor,
+    fontSize: 10,
+    fontWeight: 'bold',
   },
   todoDescription: {
     color: 'gray',
@@ -100,4 +106,4 @@ const homeScreenStyles = StyleSheet.create({
   },
 });
 
-export default homeScreenStyles;
+export default {expiredColor, homeScreen: homeScreenStyles};

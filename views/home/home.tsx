@@ -17,7 +17,7 @@ import DatePicker from '@react-native-community/datetimepicker';
 import {FAB} from 'react-native-paper';
 import {TodoItem} from '../../core/interfaces/TodoItem';
 import StorageService from '../../core/services/Storage.service';
-import homeScreenStyles from './styles';
+import styles from './styles';
 
 const HomeScreen = () => {
   const [todoList, setTodoList] = useState<TodoItem[]>([]);
@@ -138,7 +138,7 @@ const HomeScreen = () => {
   const ListItem = (item: TodoItem) => {
     return (
       <View>
-        <View style={homeScreenStyles.listItem}>
+        <View style={styles.homeScreen.listItem}>
           <View>
             <Pressable
               onPress={() => {
@@ -149,23 +149,32 @@ const HomeScreen = () => {
                 style={
                   item.expiredOn && item.expiredOn <= new Date()
                     ? {
-                        ...homeScreenStyles.todoTitle,
-                        ...homeScreenStyles.textExpired,
+                        ...styles.homeScreen.todoTitle,
+                        ...styles.homeScreen.textExpired,
                       }
-                    : homeScreenStyles.todoTitle
+                    : styles.homeScreen.todoTitle
                 }
                 value={item.title}
                 placeholder="Add title"
                 editable={false}
               />
+              {item.expiredOn && item.expiredOn <= new Date() && (
+                <Text style={styles.homeScreen.daysExpired}>
+                  ({moment(new Date()).diff(moment(item.expiredOn), 'day')}) day
+                  {moment(new Date()).diff(moment(item.expiredOn), 'day') > 1
+                    ? 's '
+                    : ' '}
+                  expired
+                </Text>
+              )}
               <TextInput
                 style={
                   item.expiredOn && item.expiredOn <= new Date()
                     ? {
-                        ...homeScreenStyles.todoDescription,
-                        ...homeScreenStyles.textExpired,
+                        ...styles.homeScreen.todoDescription,
+                        ...styles.homeScreen.textExpired,
                       }
-                    : homeScreenStyles.todoDescription
+                    : styles.homeScreen.todoDescription
                 }
                 value={item.description}
                 placeholder="Add description"
@@ -212,10 +221,10 @@ const HomeScreen = () => {
             onRequestClose={() => {
               setIsEdit(!isEdit);
             }}>
-            <View style={homeScreenStyles.centerModal}>
-              <View style={homeScreenStyles.modalContainer}>
+            <View style={styles.homeScreen.centerModal}>
+              <View style={styles.homeScreen.modalContainer}>
                 <TextInput
-                  style={homeScreenStyles.updateTitle}
+                  style={styles.homeScreen.updateTitle}
                   placeholder="Title"
                   value={selectedItem.title}
                   onChangeText={text =>
@@ -223,7 +232,7 @@ const HomeScreen = () => {
                   }
                 />
                 <TextInput
-                  style={homeScreenStyles.updateDescription}
+                  style={styles.homeScreen.updateDescription}
                   placeholder="Description"
                   value={selectedItem.description}
                   onChangeText={text =>
@@ -266,41 +275,41 @@ const HomeScreen = () => {
                     }}
                   />
                 )}
-                <View style={homeScreenStyles.separator} />
-                <View style={homeScreenStyles.dateTextContainer}>
-                  <Text style={homeScreenStyles.dateText}>Created On: </Text>
-                  <Text style={homeScreenStyles.dateText}>
+                <View style={styles.homeScreen.separator} />
+                <View style={styles.homeScreen.dateTextContainer}>
+                  <Text style={styles.homeScreen.dateText}>Created On: </Text>
+                  <Text style={styles.homeScreen.dateText}>
                     {moment(selectedItem.createdOn).format('MM/DD/yyyy')}
                   </Text>
                 </View>
-                <View style={homeScreenStyles.dateTextContainer}>
-                  <Text style={homeScreenStyles.dateText}>Last Update: </Text>
-                  <Text style={homeScreenStyles.dateText}>
+                <View style={styles.homeScreen.dateTextContainer}>
+                  <Text style={styles.homeScreen.dateText}>Last Update: </Text>
+                  <Text style={styles.homeScreen.dateText}>
                     {selectedItem.updatedOn
                       ? moment(selectedItem.updatedOn).format('MM/DD/yyyy')
                       : ''}
                   </Text>
                 </View>
-                <View style={homeScreenStyles.dateTextContainer}>
-                  <Text style={homeScreenStyles.dateText}>Expired On: </Text>
+                <View style={styles.homeScreen.dateTextContainer}>
+                  <Text style={styles.homeScreen.dateText}>Expired On: </Text>
                   <Text
                     style={
                       selectedItem.expiredOn &&
                       selectedItem.expiredOn <= new Date()
                         ? {
-                            ...homeScreenStyles.dateText,
-                            ...homeScreenStyles.textExpired,
+                            ...styles.homeScreen.dateText,
+                            ...styles.homeScreen.textExpired,
                           }
-                        : homeScreenStyles.dateText
+                        : styles.homeScreen.dateText
                     }>
                     {selectedItem.expiredOn
                       ? moment(selectedItem.expiredOn).format('MM/DD/yyyy')
                       : ''}
                   </Text>
                 </View>
-                <View style={homeScreenStyles.separator} />
-                <View style={homeScreenStyles.modalActionButtonsContainer}>
-                  <View style={homeScreenStyles.modalActionButtons}>
+                <View style={styles.homeScreen.separator} />
+                <View style={styles.homeScreen.modalActionButtonsContainer}>
+                  <View style={styles.homeScreen.modalActionButtons}>
                     <Button
                       color="orange"
                       title="Cancel"
@@ -309,7 +318,7 @@ const HomeScreen = () => {
                       }}
                     />
                   </View>
-                  <View style={homeScreenStyles.modalActionButtons}>
+                  <View style={styles.homeScreen.modalActionButtons}>
                     <Button
                       color="orange"
                       title="Save"
@@ -323,7 +332,7 @@ const HomeScreen = () => {
             </View>
           </Modal>
           <FlatList
-            style={homeScreenStyles.todoList}
+            style={styles.homeScreen.todoList}
             data={todoList}
             keyExtractor={item => `todo_${item.id}`}
             renderItem={({item}) => (
@@ -341,7 +350,7 @@ const HomeScreen = () => {
           />
           <FAB
             color="white"
-            style={homeScreenStyles.fab}
+            style={styles.homeScreen.fab}
             small
             icon="plus"
             onPress={onAddTodo}
