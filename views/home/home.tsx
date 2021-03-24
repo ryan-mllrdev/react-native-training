@@ -20,6 +20,21 @@ import StorageService from '../../core/services/Storage.service';
 import styles from './styles';
 
 const HomeScreen = () => {
+  const colors = {
+    white: 'white',
+    orange: 'orange',
+    lightgray: 'lightgray',
+  };
+  const dateFormat = 'MM/DD/YYYY';
+  const titleLabel = 'Title';
+  const descriptionLabel = 'Description';
+  const createdOnLabel = 'Created On: ';
+  const addTitleLabel = 'Add Title';
+  const addDescriptionLabel = 'Add Description';
+  const setExpiryLabel = 'Set Expiry';
+  const updateExpiryLabel = 'Update Expiry';
+  const saveLabel = 'Save';
+  const cancelLabel = 'Cancel';
   const [todoList, setTodoList] = useState<TodoItem[]>([]);
   const [isEdit, setIsEdit] = useState(false);
   const [completedList, setcompletedList] = useState<TodoItem[]>([]);
@@ -155,7 +170,7 @@ const HomeScreen = () => {
                     : styles.homeScreen.todoTitle
                 }
                 value={item.title}
-                placeholder="Add title"
+                placeholder={addTitleLabel}
                 editable={false}
               />
               {item.expiredOn && item.expiredOn <= new Date() && (
@@ -177,7 +192,7 @@ const HomeScreen = () => {
                     : styles.homeScreen.todoDescription
                 }
                 value={item.description}
-                placeholder="Add description"
+                placeholder={addDescriptionLabel}
                 editable={false}
               />
             </Pressable>
@@ -200,7 +215,9 @@ const HomeScreen = () => {
                     setcompletedList(newcompletedList);
                     setTodoList(newTodoList);
                   }}
-                  thumbColor={!item.completed ? 'lightgray' : 'orange'}
+                  thumbColor={
+                    !item.completed ? colors.lightgray : colors.orange
+                  }
                   ios_backgroundColor="#3e3e3e"
                 />
               )}
@@ -225,7 +242,7 @@ const HomeScreen = () => {
               <View style={styles.homeScreen.modalContainer}>
                 <TextInput
                   style={styles.homeScreen.updateTitle}
-                  placeholder="Title"
+                  placeholder={titleLabel}
                   value={selectedItem.title}
                   onChangeText={text =>
                     setSelectedItem({...selectedItem, title: text})
@@ -233,7 +250,7 @@ const HomeScreen = () => {
                 />
                 <TextInput
                   style={styles.homeScreen.updateDescription}
-                  placeholder="Description"
+                  placeholder={descriptionLabel}
                   value={selectedItem.description}
                   onChangeText={text =>
                     setSelectedItem({...selectedItem, description: text})
@@ -244,11 +261,11 @@ const HomeScreen = () => {
                   color={
                     selectedItem.expiredOn &&
                     selectedItem.expiredOn <= new Date()
-                      ? '#dc143c'
+                      ? styles.expiredColor
                       : ''
                   }
                   title={
-                    selectedItem.expiredOn ? 'Update Expiry' : 'Set Expiry'
+                    selectedItem.expiredOn ? updateExpiryLabel : setExpiryLabel
                   }
                   onPress={() => setDatePickerVisible(true)}
                 />
@@ -277,16 +294,18 @@ const HomeScreen = () => {
                 )}
                 <View style={styles.homeScreen.separator} />
                 <View style={styles.homeScreen.dateTextContainer}>
-                  <Text style={styles.homeScreen.dateText}>Created On: </Text>
                   <Text style={styles.homeScreen.dateText}>
-                    {moment(selectedItem.createdOn).format('MM/DD/yyyy')}
+                    {createdOnLabel}
+                  </Text>
+                  <Text style={styles.homeScreen.dateText}>
+                    {moment(selectedItem.createdOn).format(dateFormat)}
                   </Text>
                 </View>
                 <View style={styles.homeScreen.dateTextContainer}>
                   <Text style={styles.homeScreen.dateText}>Last Update: </Text>
                   <Text style={styles.homeScreen.dateText}>
                     {selectedItem.updatedOn
-                      ? moment(selectedItem.updatedOn).format('MM/DD/yyyy')
+                      ? moment(selectedItem.updatedOn).format(dateFormat)
                       : ''}
                   </Text>
                 </View>
@@ -303,7 +322,7 @@ const HomeScreen = () => {
                         : styles.homeScreen.dateText
                     }>
                     {selectedItem.expiredOn
-                      ? moment(selectedItem.expiredOn).format('MM/DD/yyyy')
+                      ? moment(selectedItem.expiredOn).format(dateFormat)
                       : ''}
                   </Text>
                 </View>
@@ -311,8 +330,8 @@ const HomeScreen = () => {
                 <View style={styles.homeScreen.modalActionButtonsContainer}>
                   <View style={styles.homeScreen.modalActionButtons}>
                     <Button
-                      color="orange"
-                      title="Cancel"
+                      color={colors.orange}
+                      title={cancelLabel}
                       onPress={() => {
                         setIsEdit(!isEdit);
                       }}
@@ -320,8 +339,8 @@ const HomeScreen = () => {
                   </View>
                   <View style={styles.homeScreen.modalActionButtons}>
                     <Button
-                      color="orange"
-                      title="Save"
+                      color={colors.orange}
+                      title={saveLabel}
                       onPress={() => {
                         onUpdateTodo(selectedItem);
                       }}
@@ -349,7 +368,7 @@ const HomeScreen = () => {
             )}
           />
           <FAB
-            color="white"
+            color={colors.white}
             style={styles.homeScreen.fab}
             small
             icon="plus"
