@@ -1,7 +1,11 @@
 /* eslint-disable prettier/prettier */
 export interface TodoItem {
   id?: number;
-  text?: string;
+  title?: string;
   description?: string;
-  done?: boolean;
+  completed?: boolean;
+  createdOn?: Date;
+  updatedOn?: Date | null;
+  completedOn?: Date | null;
+  expiredOn?: Date | null;
 }
