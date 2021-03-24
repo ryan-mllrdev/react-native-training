@@ -15,7 +15,6 @@ import {
 } from 'react-native';
 import DatePicker from '@react-native-community/datetimepicker';
 import {FAB} from 'react-native-paper';
-import {Item} from 'react-native-paper/lib/typescript/components/List/List';
 import {TodoItem} from '../../core/interfaces/TodoItem';
 import StorageService from '../../core/services/Storage.service';
 import homeScreenStyles from './styles';
@@ -38,33 +37,42 @@ const HomeScreen = () => {
     let allData: TodoItem[] = [];
     let todoData: TodoItem[] = [];
     let completedData: TodoItem[] = [];
+
+    // Get todo list first
     StorageService.getData('todoList')
       .then(todoResult => {
-        todoData = todoResult;
-
+        // Skip if no result
+        if (todoResult) {
+          todoData = todoResult;
+        }
+        // Get completed list
         StorageService.getData('completedList')
           .then(completedResult => {
+            // Skip if no result
             if (!completedResult) {
               return;
             }
             completedData = completedResult;
           })
           .finally(() => {
-            if (!allData.length) {
-              return;
-            }
+            // Merged todos and completed
             allData = [...todoData, ...completedData];
           });
       })
       .finally(() => {
+        // Skip of no data
         if (!allData.length) {
           return;
         }
+        // Get max id
         const maxId = Math.max(...allData.map(todo => todo.id));
+        // Set last id
         setLastId(maxId);
+        // Set todo list
         if (todoData && todoData.length) {
           setTodoList(todoData);
         }
+        // Set completed list
         if (completedData && completedData.length) {
           setcompletedList(completedData);
         }
@@ -166,25 +174,27 @@ const HomeScreen = () => {
             </Pressable>
           </View>
           <View>
-            {(item.title !== undefined && item.title !== '' && item.title !== null) && (
-              <Switch
-                value={item.completed}
-                onValueChange={() => {
-                  const newTodoList = todoList.filter(
-                    todoItem => todoItem.id !== item.id,
-                  );
-                  const newItem: TodoItem = {
-                    ...item,
-                    completedOn: new Date(),
-                  };
-                  const newcompletedList = completedList.concat(newItem);
-                  setcompletedList(newcompletedList);
-                  setTodoList(newTodoList);
-                }}
-                thumbColor={!item.completed ? 'lightgray' : 'orange'}
-                ios_backgroundColor="#3e3e3e"
-              />
-            )}
+            {item.title !== undefined &&
+              item.title !== '' &&
+              item.title !== null && (
+                <Switch
+                  value={item.completed}
+                  onValueChange={() => {
+                    const newTodoList = todoList.filter(
+                      todoItem => todoItem.id !== item.id,
+                    );
+                    const newItem: TodoItem = {
+                      ...item,
+                      completedOn: new Date(),
+                    };
+                    const newcompletedList = completedList.concat(newItem);
+                    setcompletedList(newcompletedList);
+                    setTodoList(newTodoList);
+                  }}
+                  thumbColor={!item.completed ? 'lightgray' : 'orange'}
+                  ios_backgroundColor="#3e3e3e"
+                />
+              )}
           </View>
         </View>
       </View>
