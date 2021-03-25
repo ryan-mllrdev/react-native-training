@@ -1,19 +1,14 @@
 /* eslint-disable prettier/prettier */
-/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable react/react-in-jsx-scope */
+
+import React from 'react';
 import moment from 'moment';
-import React, {useState} from 'react';
 import {Button, Modal, Text, TextInput, View} from 'react-native';
 import DatePicker from '@react-native-community/datetimepicker';
 import {AddEditModalParams} from '../../core/interfaces/params/AddEditModalParams';
-import {TodoItem} from '../../core/interfaces/TodoItem';
 import styles from '../../views/home/styles';
 
 const AddEditModal = (params: AddEditModalParams) => {
-  const colors = {
-    white: 'white',
-    orange: 'orange',
-    lightgray: 'lightgray',
-  };
   const dateFormat = 'MM/DD/YYYY';
   const titleLabel = 'Title';
   const descriptionLabel = 'Description';
@@ -27,7 +22,9 @@ const AddEditModal = (params: AddEditModalParams) => {
     <Modal
       animationType="slide"
       transparent={true}
-      onRequestClose={() => params.setAddEditModalVisible(!params.showAddEditModal)}>
+      onRequestClose={() =>
+        params.setAddEditModalVisible(!params.showAddEditModal)
+      }>
       <View style={styles.homeScreen.centerModal}>
         <View style={styles.homeScreen.modalContainer}>
           <TextInput
@@ -43,24 +40,32 @@ const AddEditModal = (params: AddEditModalParams) => {
             placeholder={descriptionLabel}
             value={params.selectedItem.description}
             onChangeText={text =>
-              params.setSelectedItem({...params.selectedItem, description: text})
+              params.setSelectedItem({
+                ...params.selectedItem,
+                description: text,
+              })
             }
           />
 
           <Button
             color={
-              params.selectedItem.expiredOn && params.selectedItem.expiredOn <= new Date()
-                ? styles.expiredColor
+              params.selectedItem.expiredOn &&
+              params.selectedItem.expiredOn <= new Date()
+                ? styles.colors.expired
                 : ''
             }
-            title={params.selectedItem.expiredOn ? updateExpiryLabel : setExpiryLabel}
+            title={
+              params.selectedItem.expiredOn ? updateExpiryLabel : setExpiryLabel
+            }
             onPress={() => params.setDatePickerVisible(true)}
           />
 
           {params.datePickerVisible && (
             <DatePicker
               value={
-                params.selectedItem.expiredOn ? params.selectedItem.expiredOn : new Date()
+                params.selectedItem.expiredOn
+                  ? params.selectedItem.expiredOn
+                  : new Date()
               }
               mode="date"
               display="default"
@@ -96,7 +101,8 @@ const AddEditModal = (params: AddEditModalParams) => {
             <Text style={styles.homeScreen.dateText}>Expired On: </Text>
             <Text
               style={
-                params.selectedItem.expiredOn && params.selectedItem.expiredOn <= new Date()
+                params.selectedItem.expiredOn &&
+                params.selectedItem.expiredOn <= new Date()
                   ? {
                       ...styles.homeScreen.dateText,
                       ...styles.homeScreen.textExpired,
@@ -112,14 +118,16 @@ const AddEditModal = (params: AddEditModalParams) => {
           <View style={styles.homeScreen.modalActionButtonsContainer}>
             <View style={styles.homeScreen.modalActionButtons}>
               <Button
-                color={colors.orange}
+                color={styles.colors.orange}
                 title={cancelLabel}
-                onPress={() => params.setAddEditModalVisible(!params.showAddEditModal)}
+                onPress={() =>
+                  params.setAddEditModalVisible(!params.showAddEditModal)
+                }
               />
             </View>
             <View style={styles.homeScreen.modalActionButtons}>
               <Button
-                color={colors.orange}
+                color={styles.colors.orange}
                 title={saveLabel}
                 onPress={() => {
                   params.onUpdateTodo(params.selectedItem);

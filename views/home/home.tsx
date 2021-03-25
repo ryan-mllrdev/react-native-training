@@ -8,12 +8,9 @@ import {
   TextInput,
   Switch,
   SafeAreaView,
-  Modal,
   Text,
-  Button,
   FlatList,
 } from 'react-native';
-import DatePicker from '@react-native-community/datetimepicker';
 import {FAB} from 'react-native-paper';
 import {TodoItem} from '../../core/interfaces/TodoItem';
 import StorageService from '../../core/services/Storage.service';
@@ -25,11 +22,6 @@ interface TodoItemSectionParams {
 }
 
 const HomeScreen = () => {
-  const colors = {
-    white: 'white',
-    orange: 'orange',
-    lightgray: 'lightgray',
-  };
   const emptyLabel = 'Empty';
   const addTitleLabel = 'Add Title';
   const addDescriptionLabel = 'Add Description';
@@ -213,7 +205,7 @@ const HomeScreen = () => {
                     setTodoList(newTodoList);
                   }}
                   thumbColor={
-                    !todo.completed ? colors.lightgray : colors.orange
+                    !todo.completed ? styles.colors.lightgray : styles.colors.orange
                   }
                   ios_backgroundColor="#3e3e3e"
                 />
@@ -260,7 +252,7 @@ const HomeScreen = () => {
             )}
           />
           <FAB
-            color={colors.white}
+            color={styles.colors.white}
             style={styles.homeScreen.fab}
             small
             icon="plus"

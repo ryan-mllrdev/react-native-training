@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 import {StyleSheet} from 'react-native';
 
-const completedScreenStyles = StyleSheet.create({
+const styles = StyleSheet.create({
   separator: {height: 10},
   todoContainer: {
     height: '100%',
@@ -39,4 +39,4 @@ const completedScreenStyles = StyleSheet.create({
   },
 });
 
-export default completedScreenStyles;
+export default styles;
