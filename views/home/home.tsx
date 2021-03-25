@@ -28,84 +28,54 @@ const HomeScreen = () => {
   const [todoList, setTodoList] = useState<TodoItem[]>([]);
   const [showAddEditModal, setAddEditModalVisible] = useState(false);
   const [createMode, setCreateMode] = useState(false);
-  const [completedList, setcompletedList] = useState<TodoItem[]>([]);
+  const [completedList, setCompletedList] = useState<TodoItem[]>([]);
   const [lastId, setLastId] = useState(0);
   const [datePickerVisible, setDatePickerVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState<TodoItem>();
 
   useEffect(() => {
-    let mounted = true;
-    let allData: TodoItem[] = [];
-    let todoData: TodoItem[] = [];
-    let completedData: TodoItem[] = [];
-
-    // Get todo list first
-    StorageService.getData('todoList')
-      .then(todoResult => {
-        // Skip if no result
-        if (todoResult) {
-          todoData = todoResult;
-        }
-        // Get completed list
-        StorageService.getData('completedList')
-          .then(completedResult => {
-            // Skip if no result
-            if (!completedResult) {
-              return;
-            }
-            completedData = completedResult;
-          })
-          .finally(() => {
-            // Merged todos and completed
-            allData = [...todoData, ...completedData];
-          });
-      })
-      .finally(() => {
-        // Skip of no data
-        if (!allData.length) {
-          return;
-        }
-        // Get max id
-        const maxId = Math.max(...allData.map(todo => todo.id));
-        // Set last id
-        setLastId(maxId);
-        // Set todo list
-        if (todoData && todoData.length) {
-          setTodoList(todoData);
-        }
-        // Set completed list
-        if (completedData && completedData.length) {
-          setcompletedList(completedData);
-        }
-      });
-    return () => {
-      mounted = false;
-    };
+    StorageService.getTodoData('todo').then(todoResult => {
+      if (!todoResult) {
+        return;
+      }
+      setTodoList(todoResult);
+    });
   }, []);
 
   useEffect(() => {
-    let mounted = true;
-    StorageService.storeData('completedList', completedList);
-    return () => {
-      mounted = false;
-    };
+    StorageService.getTodoData('completed').then(completedResult => {
+      if (!completedResult) {
+        return;
+      }
+      setCompletedList(completedResult);
+    });
+  }, []);
+
+  // Get the max id from all data
+  useEffect(() => {
+    const maxId = Math.max(
+      ...(todoList.length ? todoList.map(a => a.id) : [0]),
+      ...(completedList.length ? completedList.map(a => a.id) : [0]),
+    );
+    setLastId(maxId);
+  }, [todoList, completedList]);
+
+  useEffect(() => {
+    StorageService.storeTodoData('completed', completedList);
   }, [completedList]);
 
   useEffect(() => {
     if (!todoList || (todoList && !todoList.length)) {
+      StorageService.storeTodoData('todo', todoList);
       return;
     }
-    let mounted = true;
     setLastId(
       Math.max(
         ...todoList.map(todo => todo.id),
         ...(completedList.length ? completedList.map(todo => todo.id) : [0]),
       ),
     );
-    StorageService.storeData('todoList', todoList);
-    return () => {
-      mounted = false;
-    };
+    StorageService.storeTodoData('todo', todoList);
   }, [todoList, lastId, completedList]);
 
   const onAddTodo = (todoItem: TodoItem): TodoItem[] => {
@@ -155,7 +125,8 @@ const HomeScreen = () => {
         />
         {params.todo.expiredOn && params.todo.expiredOn <= new Date() && (
           <Text style={styles.homeScreen.daysExpired}>
-            ({moment(new Date()).diff(moment(params.todo.expiredOn), 'day')}) day
+            ({moment(new Date()).diff(moment(params.todo.expiredOn), 'day')})
+            day
             {moment(new Date()).diff(moment(params.todo.expiredOn), 'day') > 1
               ? 's '
               : ' '}
@@ -184,7 +155,7 @@ const HomeScreen = () => {
       <View>
         <View style={styles.homeScreen.todoItem}>
           <View>
-            <TodoItemSection todo={todo}/>
+            <TodoItemSection todo={todo} />
           </View>
           <View>
             {todo.title !== undefined &&
@@ -200,12 +171,14 @@ const HomeScreen = () => {
                       ...todo,
                       completedOn: new Date(),
                     };
-                    const newcompletedList = completedList.concat(newItem);
-                    setcompletedList(newcompletedList);
+                    const newCompletedList = completedList.concat(newItem);
+                    setCompletedList(newCompletedList);
                     setTodoList(newTodoList);
                   }}
                   thumbColor={
-                    !todo.completed ? styles.colors.lightgray : styles.colors.orange
+                    !todo.completed
+                      ? styles.colors.lightgray
+                      : styles.colors.orange
                   }
                   ios_backgroundColor="#3e3e3e"
                 />

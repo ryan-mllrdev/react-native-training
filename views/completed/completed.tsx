@@ -9,7 +9,7 @@ import styles from './styles';
 const CompletedScreen = () => {
   const [todoList, setTodoList] = useState<TodoItem[]>([]);
   useEffect(() => {
-    StorageService.getData('completedList').then(data => {
+    StorageService.getTodoData('completed').then(data => {
       setTodoList(data);
     });
   }, [todoList]);

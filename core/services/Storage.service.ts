@@ -1,19 +1,20 @@
 /* eslint-disable prettier/prettier */
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from '@react-native-community/async-storage';
 import {TodoItem} from '../interfaces/TodoItem';
 
-const storeData = async (storageKey: string, value: TodoItem[]) => {
+const storeTodoData = async (storeKey: string, value: TodoItem[]) => {
   try {
+    console.log(storeKey);
     const jsonValue = JSON.stringify(value);
-    await AsyncStorage.setItem(storageKey, jsonValue);
+    await AsyncStorage.setItem(storeKey, jsonValue);
   } catch (e) {
     console.log(e);
   }
 };
 
-const getData = async (storageKey: string) => {
+const getTodoData = async (storeKey: string) => {
   try {
-    const jsonValue = await AsyncStorage.getItem(storageKey);
+    const jsonValue = await AsyncStorage.getItem(storeKey);
     return jsonValue != null ? JSON.parse(jsonValue) : null;
   } catch (e) {
     console.log(e);
@@ -21,6 +22,6 @@ const getData = async (storageKey: string) => {
 };
 
 export default {
-  storeData,
-  getData,
+  storeTodoData,
+  getTodoData,
 };
