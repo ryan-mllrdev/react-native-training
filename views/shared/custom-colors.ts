@@ -7,7 +7,14 @@ const COLORS = {
     lightgreen: '#90ee90',
     gray: '#808080',
     coral: '#ff7f50',
-    expired: '#dc143c',
+    crimson: '#dc143c',
+    cornflowerblue: '#6495ed',
+    lightskyblue: '#87cefa',
+    orangered: '#ff4500',
+    brown: '#a52a2a',
+    darkcyan: '#008b8b',
+    darkblue: '#00008b',
+    expired: '#00008b',
 };
 
 export default COLORS;

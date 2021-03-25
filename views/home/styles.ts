@@ -17,7 +17,7 @@ const homeScreen = StyleSheet.create({
   },
   todoListContainer: {
     height: '100%',
-    backgroundColor: '#6495ed',
+    backgroundColor: COLORS.crimson,
     borderWidth: 0.5,
     borderColor: COLORS.white,
   },
@@ -50,7 +50,7 @@ const homeScreen = StyleSheet.create({
   },
   textExpired: {
     textDecorationLine: 'line-through',
-    color: colors.expired,
+    color: colors.darkblue,
   },
   daysExpired: {
     color: colors.expired,

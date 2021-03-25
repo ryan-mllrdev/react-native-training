@@ -51,7 +51,7 @@ const AddEditModal = (params: AddEditModalParams) => {
             color={
               params.selectedItem.expiredOn &&
               params.selectedItem.expiredOn <= new Date()
-                ? styles.colors.expired
+                ? styles.colors.crimson
                 : ''
             }
             title={

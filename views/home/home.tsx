@@ -148,14 +148,7 @@ const HomeScreen = () => {
           </Text>
         )}
         <TextInput
-          style={
-            params.todo.expiredOn && params.todo.expiredOn <= new Date()
-              ? {
-                  ...styles.homeScreen.todoDescription,
-                  ...styles.homeScreen.textExpired,
-                }
-              : styles.homeScreen.todoDescription
-          }
+          style={styles.homeScreen.todoDescription}
           value={params.todo.description}
           placeholder={addDescriptionLabel}
           editable={false}
