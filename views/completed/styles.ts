@@ -1,27 +1,39 @@
 /* eslint-disable prettier/prettier */
 import {StyleSheet} from 'react-native';
+import COLORS from '../shared/custom-colors';
 
-const styles = StyleSheet.create({
+const colors = COLORS;
+
+const completedStyles = StyleSheet.create({
   separator: {height: 10},
+  emptyText: {
+    position: 'absolute',
+    top: '45%',
+    left: '45%',
+    color: COLORS.white,
+    fontWeight: 'bold',
+    fontSize: 16,
+    zIndex: 1,
+  },
   todoContainer: {
     height: '100%',
-    backgroundColor: 'coral',
+    backgroundColor: COLORS.coral,
     borderWidth: 0.8,
-    borderColor: '#ffffff',
+    borderColor: COLORS.white,
   },
   todoItem: {
     borderBottomWidth: 0.5,
-    borderBottomColor: 'white',
+    borderBottomColor: COLORS.white,
     padding: 3,
   },
   todoTitle: {
-    color: 'white',
+    color: COLORS.white,
     fontSize: 20,
     fontFamily: 'sans-serif-thin',
     fontWeight: 'bold',
   },
   todoDescription: {
-    color: 'yellow',
+    color: COLORS.yellow,
     fontSize: 11,
   },
   todoDatesContainer: {
@@ -33,10 +45,10 @@ const styles = StyleSheet.create({
     fontWeight: '900',
   },
   todoDateText: {
-    color: 'white',
+    color: COLORS.white,
     fontSize: 10,
     marginLeft: 3,
   },
 });
 
-export default styles;
+export default { colors, completedStyles };

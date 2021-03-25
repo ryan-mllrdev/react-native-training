@@ -1,12 +1,8 @@
 /* eslint-disable prettier/prettier */
 import {StyleSheet} from 'react-native';
+import COLORS from '../shared/custom-colors';
 
-const colors = {
-  white: 'white',
-  orange: 'orange',
-  lightgray: 'lightgray',
-  expired: '#dc143c',
-};
+const colors = COLORS;
 
 const homeScreen = StyleSheet.create({
   separator: {height: 10},
@@ -14,7 +10,7 @@ const homeScreen = StyleSheet.create({
     position: 'absolute',
     top: '45%',
     left: '45%',
-    color: '#ffffff',
+    color: COLORS.white,
     fontWeight: 'bold',
     fontSize: 16,
     zIndex: 1,
@@ -23,7 +19,7 @@ const homeScreen = StyleSheet.create({
     height: '100%',
     backgroundColor: '#6495ed',
     borderWidth: 0.5,
-    borderColor: '#ffffff',
+    borderColor: COLORS.white,
   },
   todoItem: {
     display: 'flex',
@@ -31,11 +27,11 @@ const homeScreen = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     borderBottomWidth: 0.5,
-    borderBottomColor: 'white',
+    borderBottomColor: COLORS.white,
     padding: 3,
   },
   todoTitle: {
-    color: 'white',
+    color: COLORS.white,
     fontSize: 20,
     fontFamily: 'sans-serif-thin',
     fontWeight: 'bold',
@@ -45,7 +41,7 @@ const homeScreen = StyleSheet.create({
     width: 300,
   },
   todoDescription: {
-    color: 'yellow',
+    color: COLORS.yellow,
     fontSize: 11,
     height: 15,
     padding: 0,
@@ -63,13 +59,13 @@ const homeScreen = StyleSheet.create({
   },
   editTextContainer: {
     display: 'flex',
-    borderColor: 'lightgray',
+    borderColor: COLORS.lightgray,
     borderWidth: 0.5,
-    color: 'gray',
+    color: COLORS.gray,
     margin: 5,
   },
   editText: {
-    color: 'gray',
+    color: COLORS.gray,
     textAlign: 'center',
     fontSize: 12,
   },
@@ -77,10 +73,10 @@ const homeScreen = StyleSheet.create({
     display: 'flex',
     width: 300,
     borderWidth: 1,
-    borderColor: 'lightgray',
+    borderColor: COLORS.lightgray,
     borderRadius: 7,
     padding: 10,
-    backgroundColor: 'white',
+    backgroundColor: COLORS.white,
   },
   modalActionButtonsContainer: {
     display: 'flex',
@@ -100,14 +96,14 @@ const homeScreen = StyleSheet.create({
     height: 30,
     padding: 0,
     fontSize: 18,
-    color: 'gray',
+    color: COLORS.gray,
     fontWeight: 'bold',
   },
   updateDescription: {
     height: 30,
     padding: 0,
     fontSize: 14,
-    color: 'gray',
+    color: COLORS.gray,
   },
   dateTextContainer: {
     display: 'flex',
@@ -116,15 +112,14 @@ const homeScreen = StyleSheet.create({
   },
   dateText: {
     fontSize: 10,
-    color: 'gray',
-    // fontStyle: 'italic',
+    color: COLORS.gray,
   },
   fab: {
     position: 'absolute',
     margin: 16,
     right: 0,
     bottom: 0,
-    backgroundColor: 'orange',
+    backgroundColor: COLORS.orange,
   },
 });
 

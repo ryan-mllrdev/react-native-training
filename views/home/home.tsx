@@ -33,8 +33,20 @@ const HomeScreen = () => {
   const [datePickerVisible, setDatePickerVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState<TodoItem>();
 
+  // Get last id
   useEffect(() => {
-    StorageService.getTodoData('todo').then(todoResult => {
+    StorageService.getSingleData('lastId').then(lastIdResult => {
+      if (!lastIdResult) {
+        return;
+      }
+      console.log(lastIdResult);
+      setLastId(+lastIdResult);
+    });
+  }, []);
+
+  // Get todo's
+  useEffect(() => {
+    StorageService.getJsonData('todo').then(todoResult => {
       if (!todoResult) {
         return;
       }
@@ -42,8 +54,9 @@ const HomeScreen = () => {
     });
   }, []);
 
+  // Get completed todos...
   useEffect(() => {
-    StorageService.getTodoData('completed').then(completedResult => {
+    StorageService.getJsonData('completed').then(completedResult => {
       if (!completedResult) {
         return;
       }
@@ -61,12 +74,12 @@ const HomeScreen = () => {
   }, [todoList, completedList]);
 
   useEffect(() => {
-    StorageService.storeTodoData('completed', completedList);
+    StorageService.storeJsonData('completed', completedList);
   }, [completedList]);
 
   useEffect(() => {
     if (!todoList || (todoList && !todoList.length)) {
-      StorageService.storeTodoData('todo', todoList);
+      StorageService.storeJsonData('todo', todoList);
       return;
     }
     setLastId(
@@ -75,7 +88,8 @@ const HomeScreen = () => {
         ...(completedList.length ? completedList.map(todo => todo.id) : [0]),
       ),
     );
-    StorageService.storeTodoData('todo', todoList);
+    StorageService.storeSingleData('lastId', lastId.toString());
+    StorageService.storeJsonData('todo', todoList);
   }, [todoList, lastId, completedList]);
 
   const onAddTodo = (todoItem: TodoItem): TodoItem[] => {
