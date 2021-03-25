@@ -18,6 +18,11 @@ import {FAB} from 'react-native-paper';
 import {TodoItem} from '../../core/interfaces/TodoItem';
 import StorageService from '../../core/services/Storage.service';
 import styles from './styles';
+import AddEditModal from '../../modal/home/add-edit-todo';
+
+interface TodoItemSectionParams {
+  todo: TodoItem;
+}
 
 const HomeScreen = () => {
   const colors = {
@@ -25,27 +30,16 @@ const HomeScreen = () => {
     orange: 'orange',
     lightgray: 'lightgray',
   };
-  const dateFormat = 'MM/DD/YYYY';
-  const titleLabel = 'Title';
-  const descriptionLabel = 'Description';
-  const createdOnLabel = 'Created On: ';
+  const emptyLabel = 'Empty';
   const addTitleLabel = 'Add Title';
   const addDescriptionLabel = 'Add Description';
-  const setExpiryLabel = 'Set Expiry';
-  const updateExpiryLabel = 'Update Expiry';
-  const saveLabel = 'Save';
-  const cancelLabel = 'Cancel';
   const [todoList, setTodoList] = useState<TodoItem[]>([]);
-  const [isEdit, setIsEdit] = useState(false);
+  const [showAddEditModal, setAddEditModalVisible] = useState(false);
+  const [createMode, setCreateMode] = useState(false);
   const [completedList, setcompletedList] = useState<TodoItem[]>([]);
   const [lastId, setLastId] = useState(0);
   const [datePickerVisible, setDatePickerVisible] = useState(false);
-  const [selectedItem, setSelectedItem] = useState<TodoItem>({
-    id: 0,
-    title: '',
-    description: '',
-    completed: false,
-  });
+  const [selectedItem, setSelectedItem] = useState<TodoItem>();
 
   useEffect(() => {
     let mounted = true;
@@ -122,93 +116,96 @@ const HomeScreen = () => {
     };
   }, [todoList, lastId, completedList]);
 
-  const onAddTodo = () => {
-    const todoItem: TodoItem = {
-      id: lastId + 1,
-      title: '',
-      description: '',
-      completed: false,
-      createdOn: new Date(),
-    };
+  const onAddTodo = (todoItem: TodoItem): TodoItem[] => {
     const newList = todoList.concat(todoItem);
-    setTodoList(newList);
+    return newList;
   };
 
   const onUpdateTodo = (todo: TodoItem) => {
-    const newList = todoList.map(todoItem => {
-      if (todoItem.id === todo.id) {
-        const updatedItem: TodoItem = {
-          ...todo,
-          updatedOn: new Date(),
-        };
-        return updatedItem;
-      }
-      return todoItem;
-    });
+    const newList = createMode
+      ? onAddTodo(todo)
+      : todoList.map(todoItem => {
+          if (todoItem.id === todo.id) {
+            const updatedItem: TodoItem = {
+              ...todo,
+              updatedOn: new Date(),
+            };
+            return updatedItem;
+          }
+          return todoItem;
+        });
 
+    setCreateMode(false);
     setTodoList(newList);
-    setIsEdit(!isEdit);
+    setAddEditModalVisible(!showAddEditModal);
   };
 
-  const ListItem = (item: TodoItem) => {
+  const TodoItemSection = (params: TodoItemSectionParams) => {
+    return (
+      <Pressable
+        onPress={() => {
+          setCreateMode(false);
+          setAddEditModalVisible(true);
+          setSelectedItem(params.todo);
+        }}>
+        <TextInput
+          style={
+            params.todo.expiredOn && params.todo.expiredOn <= new Date()
+              ? {
+                  ...styles.homeScreen.todoTitle,
+                  ...styles.homeScreen.textExpired,
+                }
+              : styles.homeScreen.todoTitle
+          }
+          value={params.todo.title}
+          placeholder={addTitleLabel}
+          editable={false}
+        />
+        {params.todo.expiredOn && params.todo.expiredOn <= new Date() && (
+          <Text style={styles.homeScreen.daysExpired}>
+            ({moment(new Date()).diff(moment(params.todo.expiredOn), 'day')}) day
+            {moment(new Date()).diff(moment(params.todo.expiredOn), 'day') > 1
+              ? 's '
+              : ' '}
+            expired
+          </Text>
+        )}
+        <TextInput
+          style={
+            params.todo.expiredOn && params.todo.expiredOn <= new Date()
+              ? {
+                  ...styles.homeScreen.todoDescription,
+                  ...styles.homeScreen.textExpired,
+                }
+              : styles.homeScreen.todoDescription
+          }
+          value={params.todo.description}
+          placeholder={addDescriptionLabel}
+          editable={false}
+        />
+      </Pressable>
+    );
+  };
+
+  const ListItem = (todo: TodoItem) => {
     return (
       <View>
-        <View style={styles.homeScreen.listItem}>
+        <View style={styles.homeScreen.todoItem}>
           <View>
-            <Pressable
-              onPress={() => {
-                setIsEdit(true);
-                setSelectedItem(item);
-              }}>
-              <TextInput
-                style={
-                  item.expiredOn && item.expiredOn <= new Date()
-                    ? {
-                        ...styles.homeScreen.todoTitle,
-                        ...styles.homeScreen.textExpired,
-                      }
-                    : styles.homeScreen.todoTitle
-                }
-                value={item.title}
-                placeholder={addTitleLabel}
-                editable={false}
-              />
-              {item.expiredOn && item.expiredOn <= new Date() && (
-                <Text style={styles.homeScreen.daysExpired}>
-                  ({moment(new Date()).diff(moment(item.expiredOn), 'day')}) day
-                  {moment(new Date()).diff(moment(item.expiredOn), 'day') > 1
-                    ? 's '
-                    : ' '}
-                  expired
-                </Text>
-              )}
-              <TextInput
-                style={
-                  item.expiredOn && item.expiredOn <= new Date()
-                    ? {
-                        ...styles.homeScreen.todoDescription,
-                        ...styles.homeScreen.textExpired,
-                      }
-                    : styles.homeScreen.todoDescription
-                }
-                value={item.description}
-                placeholder={addDescriptionLabel}
-                editable={false}
-              />
-            </Pressable>
+            <TodoItemSection todo={todo}/>
           </View>
           <View>
-            {item.title !== undefined &&
-              item.title !== '' &&
-              item.title !== null && (
+            {todo.title !== undefined &&
+              todo.title !== '' &&
+              todo.title !== null && (
                 <Switch
-                  value={item.completed}
+                  value={todo.completed}
                   onValueChange={() => {
                     const newTodoList = todoList.filter(
-                      todoItem => todoItem.id !== item.id,
+                      todoItem => todoItem.id !== todo.id,
                     );
                     const newItem: TodoItem = {
-                      ...item,
+                      ...todo,
                       completedOn: new Date(),
                     };
                     const newcompletedList = completedList.concat(newItem);
@@ -216,7 +213,7 @@ const HomeScreen = () => {
                     setTodoList(newTodoList);
                   }}
                   thumbColor={
-                    !item.completed ? colors.lightgray : colors.orange
+                    !todo.completed ? colors.lightgray : colors.orange
                   }
                   ios_backgroundColor="#3e3e3e"
                 />
@@ -229,129 +226,24 @@ const HomeScreen = () => {
 
   return (
     <SafeAreaView>
+      {!todoList.length && (
+        <Text style={styles.homeScreen.emptyText}>{emptyLabel}</Text>
+      )}
       <View accessibilityRole="tab">
         <View accessibilityRole="tablist">
-          <Modal
-            animationType="slide"
-            transparent={true}
-            visible={isEdit}
-            onRequestClose={() => {
-              setIsEdit(!isEdit);
-            }}>
-            <View style={styles.homeScreen.centerModal}>
-              <View style={styles.homeScreen.modalContainer}>
-                <TextInput
-                  style={styles.homeScreen.updateTitle}
-                  placeholder={titleLabel}
-                  value={selectedItem.title}
-                  onChangeText={text =>
-                    setSelectedItem({...selectedItem, title: text})
-                  }
-                />
-                <TextInput
-                  style={styles.homeScreen.updateDescription}
-                  placeholder={descriptionLabel}
-                  value={selectedItem.description}
-                  onChangeText={text =>
-                    setSelectedItem({...selectedItem, description: text})
-                  }
-                />
-
-                <Button
-                  color={
-                    selectedItem.expiredOn &&
-                    selectedItem.expiredOn <= new Date()
-                      ? styles.expiredColor
-                      : ''
-                  }
-                  title={
-                    selectedItem.expiredOn ? updateExpiryLabel : setExpiryLabel
-                  }
-                  onPress={() => setDatePickerVisible(true)}
-                />
-
-                {datePickerVisible && (
-                  <DatePicker
-                    value={
-                      selectedItem.expiredOn
-                        ? selectedItem.expiredOn
-                        : new Date()
-                    }
-                    mode="date"
-                    display="default"
-                    onChange={(evt, date) => {
-                      if (evt.type === 'dismissed') {
-                        setDatePickerVisible(false);
-                        return;
-                      }
-                      setDatePickerVisible(false);
-                      setSelectedItem({
-                        ...selectedItem,
-                        expiredOn: date,
-                      });
-                    }}
-                  />
-                )}
-                <View style={styles.homeScreen.separator} />
-                <View style={styles.homeScreen.dateTextContainer}>
-                  <Text style={styles.homeScreen.dateText}>
-                    {createdOnLabel}
-                  </Text>
-                  <Text style={styles.homeScreen.dateText}>
-                    {moment(selectedItem.createdOn).format(dateFormat)}
-                  </Text>
-                </View>
-                <View style={styles.homeScreen.dateTextContainer}>
-                  <Text style={styles.homeScreen.dateText}>Last Update: </Text>
-                  <Text style={styles.homeScreen.dateText}>
-                    {selectedItem.updatedOn
-                      ? moment(selectedItem.updatedOn).format(dateFormat)
-                      : ''}
-                  </Text>
-                </View>
-                <View style={styles.homeScreen.dateTextContainer}>
-                  <Text style={styles.homeScreen.dateText}>Expired On: </Text>
-                  <Text
-                    style={
-                      selectedItem.expiredOn &&
-                      selectedItem.expiredOn <= new Date()
-                        ? {
-                            ...styles.homeScreen.dateText,
-                            ...styles.homeScreen.textExpired,
-                          }
-                        : styles.homeScreen.dateText
-                    }>
-                    {selectedItem.expiredOn
-                      ? moment(selectedItem.expiredOn).format(dateFormat)
-                      : ''}
-                  </Text>
-                </View>
-                <View style={styles.homeScreen.separator} />
-                <View style={styles.homeScreen.modalActionButtonsContainer}>
-                  <View style={styles.homeScreen.modalActionButtons}>
-                    <Button
-                      color={colors.orange}
-                      title={cancelLabel}
-                      onPress={() => {
-                        setIsEdit(!isEdit);
-                      }}
-                    />
-                  </View>
-                  <View style={styles.homeScreen.modalActionButtons}>
-                    <Button
-                      color={colors.orange}
-                      title={saveLabel}
-                      onPress={() => {
-                        onUpdateTodo(selectedItem);
-                      }}
-                    />
-                  </View>
-                </View>
-              </View>
-            </View>
-          </Modal>
+          {showAddEditModal && (
+            <AddEditModal
+              datePickerVisible={datePickerVisible}
+              selectedItem={selectedItem}
+              showAddEditModal={showAddEditModal}
+              setSelectedItem={setSelectedItem}
+              setAddEditModalVisible={setAddEditModalVisible}
+              setDatePickerVisible={setDatePickerVisible}
+              onUpdateTodo={onUpdateTodo}
+            />
+          )}
           <FlatList
-            style={styles.homeScreen.todoList}
+            style={styles.homeScreen.todoListContainer}
             data={todoList}
             keyExtractor={item => `todo_${item.id}`}
             renderItem={({item}) => (
@@ -372,7 +264,17 @@ const HomeScreen = () => {
             style={styles.homeScreen.fab}
             small
             icon="plus"
-            onPress={onAddTodo}
+            onPress={() => {
+              setSelectedItem({
+                id: lastId + 1,
+                title: '',
+                description: '',
+                completed: false,
+                createdOn: new Date(),
+              });
+              setCreateMode(true);
+              setAddEditModalVisible(true);
+            }}
           />
         </View>
       </View>

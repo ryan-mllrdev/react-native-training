@@ -4,22 +4,46 @@ import {StyleSheet} from 'react-native';
 const expiredColor = '#dc143c';
 const homeScreenStyles = StyleSheet.create({
   separator: {height: 10},
-  todoList: {
-    height: '100%',
+  emptyText: {
+    position: 'absolute',
+    top: '45%',
+    left: '45%',
+    color: '#ffffff',
+    fontWeight: 'bold',
+    fontSize: 16,
+    zIndex: 1,
   },
-  listItem: {
-    margin: 3,
+  todoListContainer: {
+    height: '100%',
+    backgroundColor: '#6495ed',
+    borderWidth: 0.5,
+    borderColor: '#ffffff',
+  },
+  todoItem: {
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    borderBottomWidth: 0.5,
+    borderBottomColor: 'white',
+    padding: 3,
   },
   todoTitle: {
-    color: '#000000',
+    color: 'white',
+    fontSize: 20,
+    fontFamily: 'sans-serif-thin',
+    fontWeight: 'bold',
     height: 20,
     padding: 0,
     margin: 3,
-    fontWeight: 'bold',
+    width: 300,
+  },
+  todoDescription: {
+    color: 'yellow',
+    fontSize: 11,
+    height: 15,
+    padding: 0,
+    margin: 3,
     width: 300,
   },
   textExpired: {
@@ -30,14 +54,6 @@ const homeScreenStyles = StyleSheet.create({
     color: expiredColor,
     fontSize: 10,
     fontWeight: 'bold',
-  },
-  todoDescription: {
-    color: 'gray',
-    fontSize: 10,
-    height: 15,
-    padding: 0,
-    margin: 3,
-    width: 300,
   },
   editTextContainer: {
     display: 'flex',

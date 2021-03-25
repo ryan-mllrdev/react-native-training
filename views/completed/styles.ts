@@ -3,30 +3,37 @@ import {StyleSheet} from 'react-native';
 
 const completedScreenStyles = StyleSheet.create({
   separator: {height: 10},
-  completedTodos: {
-    borderBottomWidth: 0.3,
-    borderBottomColor: 'gray',
+  todoContainer: {
+    height: '100%',
+    backgroundColor: 'coral',
+    borderWidth: 0.8,
+    borderColor: '#ffffff',
+  },
+  todoItem: {
+    borderBottomWidth: 0.5,
+    borderBottomColor: 'white',
     padding: 3,
   },
-  completedTodoTitle: {
-    color: 'gray',
+  todoTitle: {
+    color: 'white',
+    fontSize: 20,
+    fontFamily: 'sans-serif-thin',
     fontWeight: 'bold',
-    fontSize: 16,
   },
-  completedTodoDescription: {
-    color: 'gray',
-    fontSize: 12,
+  todoDescription: {
+    color: 'yellow',
+    fontSize: 11,
   },
-  completedTodoDatesContainer: {
+  todoDatesContainer: {
     display: 'flex',
     flexDirection: 'row',
   },
-  completedTodoIcon: {
+  todoDateIcon: {
     fontSize: 14,
     fontWeight: '900',
   },
-  completedTodoText: {
-    color: 'gray',
+  todoDateText: {
+    color: 'white',
     fontSize: 10,
     marginLeft: 3,
   },

@@ -1,4 +1,5 @@
 /* eslint-disable prettier/prettier */
+
 export interface TodoItem {
   id?: number;
   title?: string;
@@ -8,4 +9,5 @@ export interface TodoItem {
   updatedOn?: Date | null;
   completedOn?: Date | null;
   expiredOn?: Date | null;
+  important?: boolean;
 }
