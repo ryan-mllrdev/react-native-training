@@ -17,6 +17,7 @@ import StorageService from '../../core/services/Storage.service';
 import styles from './styles';
 import AddEditModal from '../../modal/home/add-edit-todo';
 import dateUtils from '../../core/utils/date-utils';
+import COLORS from '../shared/custom-colors';
 
 interface TodoItemSectionParams {
   todo: TodoItem;
@@ -199,7 +200,8 @@ const HomeScreen = () => {
   };
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{backgroundColor: COLORS.lightgray}}>
+    <Text style={{fontSize: 30, fontWeight: 'bold', color: COLORS.gray, textAlign: 'center'}}>Tasks</Text>
       {!todoList.length && (
         <Text style={styles.homeScreen.emptyText}>{emptyLabel}</Text>
       )}
