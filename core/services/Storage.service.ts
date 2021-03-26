@@ -4,7 +4,6 @@ import {TodoItem} from '../interfaces/TodoItem';
 
 const storeJsonData = async (storeKey: string, value: TodoItem[]) => {
   try {
-    console.log(storeKey);
     const jsonValue = JSON.stringify(value);
     await AsyncStorage.setItem(storeKey, jsonValue);
   } catch (e) {
@@ -23,7 +22,6 @@ const getJsonData = async (storeKey: string) => {
 
 const storeSingleData = async (storeKey: string, value: string) => {
   try {
-    console.log(storeKey);
     const stringValue = JSON.stringify(value);
     await AsyncStorage.setItem(storeKey, stringValue);
   } catch (e) {

@@ -17,7 +17,7 @@ const completedStyles = StyleSheet.create({
   },
   todoContainer: {
     height: '100%',
-    backgroundColor: COLORS.coral,
+    backgroundColor: COLORS.darkcyan,
     borderWidth: 0.8,
     borderColor: COLORS.white,
   },

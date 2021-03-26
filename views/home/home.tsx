@@ -16,6 +16,7 @@ import {TodoItem} from '../../core/interfaces/TodoItem';
 import StorageService from '../../core/services/Storage.service';
 import styles from './styles';
 import AddEditModal from '../../modal/home/add-edit-todo';
+import dateUtils from '../../core/utils/date-utils';
 
 interface TodoItemSectionParams {
   todo: TodoItem;
@@ -39,7 +40,6 @@ const HomeScreen = () => {
       if (!lastIdResult) {
         return;
       }
-      console.log(lastIdResult);
       setLastId(+lastIdResult);
     });
   }, []);
@@ -116,6 +116,15 @@ const HomeScreen = () => {
     setAddEditModalVisible(!showAddEditModal);
   };
 
+  const todoItemTitleStyle = (expiredOn: Date) => {
+    return expiredOn && dateUtils.lessThanOrEqual(expiredOn, new Date(), 'day')
+      ? {
+          ...styles.homeScreen.todoTitle,
+          ...styles.homeScreen.textExpired,
+        }
+      : styles.homeScreen.todoTitle;
+  };
+
   const TodoItemSection = (params: TodoItemSectionParams) => {
     return (
       <Pressable
@@ -125,23 +134,16 @@ const HomeScreen = () => {
           setSelectedItem(params.todo);
         }}>
         <TextInput
-          style={
-            params.todo.expiredOn && params.todo.expiredOn <= new Date()
-              ? {
-                  ...styles.homeScreen.todoTitle,
-                  ...styles.homeScreen.textExpired,
-                }
-              : styles.homeScreen.todoTitle
-          }
+          style={todoItemTitleStyle(params.todo.expiredOn)}
           value={params.todo.title}
           placeholder={addTitleLabel}
           editable={false}
         />
-        {params.todo.expiredOn && params.todo.expiredOn <= new Date() && (
+        {params.todo.expiredOn && dateUtils.lessThanOrEqual(params.todo.expiredOn, new Date(), 'day') && (
           <Text style={styles.homeScreen.daysExpired}>
-            ({moment(new Date()).diff(moment(params.todo.expiredOn), 'day')})
+            ({dateUtils.dateDiff(new Date(), params.todo.expiredOn, 'day')})
             day
-            {moment(new Date()).diff(moment(params.todo.expiredOn), 'day') > 1
+            {dateUtils.dateDiff(new Date(), params.todo.expiredOn, 'day') > 1
               ? 's '
               : ' '}
             expired

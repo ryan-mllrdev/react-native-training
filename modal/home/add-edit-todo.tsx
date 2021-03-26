@@ -1,6 +1,5 @@
 /* eslint-disable prettier/prettier */
 
-
 import React from 'react';
 import moment from 'moment';
 import {Button, Modal, Text, TextInput, View} from 'react-native';
@@ -64,7 +63,7 @@ const AddEditModal = (params: AddEditModalParams) => {
             <DatePicker
               value={
                 params.selectedItem.expiredOn
-                  ? params.selectedItem.expiredOn
+                  ? new Date(params.selectedItem.expiredOn)
                   : new Date()
               }
               mode="date"

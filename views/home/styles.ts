@@ -26,7 +26,7 @@ const homeScreen = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    borderBottomWidth: 0.5,
+    borderBottomWidth: 0.8,
     borderBottomColor: COLORS.white,
     padding: 3,
   },

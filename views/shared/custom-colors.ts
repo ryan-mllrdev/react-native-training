@@ -14,6 +14,7 @@ const COLORS = {
     brown: '#a52a2a',
     darkcyan: '#008b8b',
     darkblue: '#00008b',
+    aquamarine: '#7fffd4',
     expired: '#00008b',
 };
 
