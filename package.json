@@ -16,7 +16,6 @@
     "@react-navigation/bottom-tabs": "^5.11.8",
     "@react-navigation/native": "^5.9.3",
     "@types/react-native-calendar-picker": "^7.0.1",
-    "@types/react-native-datepicker": "^1.7.0",
     "@types/react-native-vector-icons": "^6.4.6",
     "@types/react-navigation": "^3.4.0",
     "moment": "^2.29.1",

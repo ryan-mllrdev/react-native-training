@@ -7,16 +7,20 @@
  *
  * @format
  */
-import React from 'react';
+import React, {useState} from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {NavigationContainer} from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import CompletedScreen from './views/completed/completed';
 import HomeScreen from './views/home/home';
+import CalendarScreen from './views/calendar/calendar';
+import {TodoItem} from './core/interfaces/TodoItem';
 
 const Tab = createBottomTabNavigator();
 
 const App = () => {
+  const [todoList, setTodoList] = useState<TodoItem[]>([]);
+
   return (
     <NavigationContainer>
       <Tab.Navigator
@@ -26,11 +30,29 @@ const App = () => {
         }}>
         <Tab.Screen
           name="Home"
-          component={HomeScreen}
+          children={() => (
+            <HomeScreen todoList={todoList} setTodoList={setTodoList} />
+          )}
           options={{
             tabBarLabel: 'Home',
             tabBarIcon: ({color, size}) => (
               <MaterialCommunityIcons name="home" color={color} size={size} />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="Calendar"
+          children={() => (
+            <CalendarScreen todoList={todoList} setTodoList={setTodoList} />
+          )}
+          options={{
+            tabBarLabel: 'Calendar',
+            tabBarIcon: ({color, size}) => (
+              <MaterialCommunityIcons
+                name="calendar"
+                color={color}
+                size={size}
+              />
             ),
           }}
         />

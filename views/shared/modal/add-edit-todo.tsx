@@ -4,10 +4,12 @@ import React from 'react';
 import moment from 'moment';
 import {Button, Modal, Text, TextInput, View} from 'react-native';
 import DatePicker from '@react-native-community/datetimepicker';
-import {AddEditModalParams} from '../../core/interfaces/params/AddEditModalParams';
-import styles from '../../views/home/styles';
+import {IAddEditModalParams} from '../../../core/interfaces/params/IAddEditModalParams';
+import styles from '../../home/styles';
+import dateUtils from '../../../core/utils/date-utils';
+import COLORS from '../custom-colors';
 
-const AddEditModal = (params: AddEditModalParams) => {
+const AddEditModal = (params: IAddEditModalParams) => {
   const dateFormat = 'MM/DD/YYYY';
   const titleLabel = 'Title';
   const descriptionLabel = 'Description';
@@ -45,19 +47,32 @@ const AddEditModal = (params: AddEditModalParams) => {
               })
             }
           />
-
-          <Button
-            color={
-              params.selectedItem.expiredOn &&
-              params.selectedItem.expiredOn <= new Date()
-                ? styles.colors.crimson
-                : ''
-            }
-            title={
-              params.selectedItem.expiredOn ? updateExpiryLabel : setExpiryLabel
-            }
-            onPress={() => params.setDatePickerVisible(true)}
-          />
+          {!params.showExpiryButton &&
+            dateUtils.lessThanOrEqual(
+              params.selectedItem.expiredOn,
+              new Date(),
+              'day',
+            ) && (
+              <Text style={{color: COLORS.crimson}}>
+                Please select a date later than the current date
+              </Text>
+            )}
+          {params.showExpiryButton && (
+            <Button
+              color={
+                params.selectedItem.expiredOn &&
+                params.selectedItem.expiredOn <= new Date()
+                  ? styles.colors.crimson
+                  : ''
+              }
+              title={
+                params.selectedItem.expiredOn
+                  ? updateExpiryLabel
+                  : setExpiryLabel
+              }
+              onPress={() => params.setDatePickerVisible(true)}
+            />
+          )}
 
           {params.datePickerVisible && (
             <DatePicker

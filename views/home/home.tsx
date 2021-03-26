@@ -15,25 +15,25 @@ import {FAB} from 'react-native-paper';
 import {TodoItem} from '../../core/interfaces/TodoItem';
 import StorageService from '../../core/services/Storage.service';
 import styles from './styles';
-import AddEditModal from '../../modal/home/add-edit-todo';
+import AddEditModal from '../shared/modal/add-edit-todo';
 import dateUtils from '../../core/utils/date-utils';
 import COLORS from '../shared/custom-colors';
+import {IScreenParams} from '../../core/interfaces/params/IScreenParams';
 
 interface TodoItemSectionParams {
   todo: TodoItem;
 }
 
-const HomeScreen = () => {
+const HomeScreen = (params: IScreenParams) => {
   const emptyLabel = 'Empty';
   const addTitleLabel = 'Add Title';
   const addDescriptionLabel = 'Add Description';
-  const [todoList, setTodoList] = useState<TodoItem[]>([]);
+  const [datePickerVisible, setDatePickerVisible] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<TodoItem>();
   const [showAddEditModal, setAddEditModalVisible] = useState(false);
   const [createMode, setCreateMode] = useState(false);
   const [completedList, setCompletedList] = useState<TodoItem[]>([]);
   const [lastId, setLastId] = useState(0);
-  const [datePickerVisible, setDatePickerVisible] = useState(false);
-  const [selectedItem, setSelectedItem] = useState<TodoItem>();
 
   // Get last id
   useEffect(() => {
@@ -47,12 +47,18 @@ const HomeScreen = () => {
 
   // Get todo's
   useEffect(() => {
+    console.log('fetching todo...');
+    let started = true;
     StorageService.getJsonData('todo').then(todoResult => {
       if (!todoResult) {
         return;
       }
-      setTodoList(todoResult);
+      params.setTodoList(todoResult);
+      return () => {
+        started = false;
+      };
     });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Get completed todos...
@@ -68,40 +74,40 @@ const HomeScreen = () => {
   // Get the max id from all data
   useEffect(() => {
     const maxId = Math.max(
-      ...(todoList.length ? todoList.map(a => a.id) : [0]),
+      ...(params.todoList.length ? params.todoList.map(a => a.id) : [0]),
       ...(completedList.length ? completedList.map(a => a.id) : [0]),
     );
     setLastId(maxId);
-  }, [todoList, completedList]);
+  }, [params.todoList, completedList]);
 
   useEffect(() => {
     StorageService.storeJsonData('completed', completedList);
   }, [completedList]);
 
   useEffect(() => {
-    if (!todoList || (todoList && !todoList.length)) {
-      StorageService.storeJsonData('todo', todoList);
+    if (!params.todoList || (params.todoList && !params.todoList.length)) {
+      StorageService.storeJsonData('todo', params.todoList);
       return;
     }
     setLastId(
       Math.max(
-        ...todoList.map(todo => todo.id),
+        ...params.todoList.map(todo => todo.id),
         ...(completedList.length ? completedList.map(todo => todo.id) : [0]),
       ),
     );
     StorageService.storeSingleData('lastId', lastId.toString());
-    StorageService.storeJsonData('todo', todoList);
-  }, [todoList, lastId, completedList]);
+    StorageService.storeJsonData('todo', params.todoList);
+  }, [params.todoList, lastId, completedList]);
 
   const onAddTodo = (todoItem: TodoItem): TodoItem[] => {
-    const newList = todoList.concat(todoItem);
+    const newList = params.todoList.concat(todoItem);
     return newList;
   };
 
   const onUpdateTodo = (todo: TodoItem) => {
     const newList = createMode
       ? onAddTodo(todo)
-      : todoList.map(todoItem => {
+      : params.todoList.map(todoItem => {
           if (todoItem.id === todo.id) {
             const updatedItem: TodoItem = {
               ...todo,
@@ -113,7 +119,7 @@ const HomeScreen = () => {
         });
 
     setCreateMode(false);
-    setTodoList(newList);
+    params.setTodoList(newList);
     setAddEditModalVisible(!showAddEditModal);
   };
 
@@ -126,33 +132,47 @@ const HomeScreen = () => {
       : styles.homeScreen.todoTitle;
   };
 
-  const TodoItemSection = (params: TodoItemSectionParams) => {
+  const TodoItemSection = (todoItemParams: TodoItemSectionParams) => {
     return (
       <Pressable
         onPress={() => {
           setCreateMode(false);
           setAddEditModalVisible(true);
-          setSelectedItem(params.todo);
+          setSelectedItem(todoItemParams.todo);
         }}>
         <TextInput
-          style={todoItemTitleStyle(params.todo.expiredOn)}
-          value={params.todo.title}
+          style={todoItemTitleStyle(todoItemParams.todo.expiredOn)}
+          value={todoItemParams.todo.title}
           placeholder={addTitleLabel}
           editable={false}
         />
-        {params.todo.expiredOn && dateUtils.lessThanOrEqual(params.todo.expiredOn, new Date(), 'day') && (
-          <Text style={styles.homeScreen.daysExpired}>
-            ({dateUtils.dateDiff(new Date(), params.todo.expiredOn, 'day')})
-            day
-            {dateUtils.dateDiff(new Date(), params.todo.expiredOn, 'day') > 1
-              ? 's '
-              : ' '}
-            expired
-          </Text>
-        )}
+        {todoItemParams.todo.expiredOn &&
+          dateUtils.lessThanOrEqual(
+            todoItemParams.todo.expiredOn,
+            new Date(),
+            'day',
+          ) && (
+            <Text style={styles.homeScreen.daysExpired}>
+              (
+              {dateUtils.dateDiff(
+                new Date(),
+                todoItemParams.todo.expiredOn,
+                'day',
+              )}
+              ) day
+              {dateUtils.dateDiff(
+                new Date(),
+                todoItemParams.todo.expiredOn,
+                'day',
+              ) > 1
+                ? 's '
+                : ' '}
+              expired
+            </Text>
+          )}
         <TextInput
           style={styles.homeScreen.todoDescription}
-          value={params.todo.description}
+          value={todoItemParams.todo.description}
           placeholder={addDescriptionLabel}
           editable={false}
         />
@@ -174,7 +194,7 @@ const HomeScreen = () => {
                 <Switch
                   value={todo.completed}
                   onValueChange={() => {
-                    const newTodoList = todoList.filter(
+                    const newTodoList = params.todoList.filter(
                       todoItem => todoItem.id !== todo.id,
                     );
                     const newItem: TodoItem = {
@@ -183,7 +203,7 @@ const HomeScreen = () => {
                     };
                     const newCompletedList = completedList.concat(newItem);
                     setCompletedList(newCompletedList);
-                    setTodoList(newTodoList);
+                    params.setTodoList(newTodoList);
                   }}
                   thumbColor={
                     !todo.completed
@@ -201,14 +221,15 @@ const HomeScreen = () => {
 
   return (
     <SafeAreaView style={{backgroundColor: COLORS.lightgray}}>
-    <Text style={{fontSize: 30, fontWeight: 'bold', color: COLORS.gray, textAlign: 'center'}}>Tasks</Text>
-      {!todoList.length && (
+      <Text style={styles.homeScreen.todoTitleHeader}>Tasks</Text>
+      {!params.todoList.length && (
         <Text style={styles.homeScreen.emptyText}>{emptyLabel}</Text>
       )}
       <View accessibilityRole="tab">
         <View accessibilityRole="tablist">
           {showAddEditModal && (
             <AddEditModal
+              showExpiryButton={true}
               datePickerVisible={datePickerVisible}
               selectedItem={selectedItem}
               showAddEditModal={showAddEditModal}
@@ -220,7 +241,7 @@ const HomeScreen = () => {
           )}
           <FlatList
             style={styles.homeScreen.todoListContainer}
-            data={todoList}
+            data={params.todoList}
             keyExtractor={item => `todo_${item.id}`}
             renderItem={({item}) => (
               <ListItem

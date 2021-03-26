@@ -17,39 +17,40 @@ const CompletedScreen = () => {
     });
   }, [todoList]);
   return (
-    <View style={styles.completedStyles.todoContainer}>
+    <View style={styles.completedScreen.todoContainer}>
+      <Text style={styles.completedScreen.todoTitleHeader}>Completed Tasks</Text>
       {!todoList.length && (
-        <Text style={styles.completedStyles.emptyText}>{emptyLabel}</Text>
+        <Text style={styles.completedScreen.emptyText}>{emptyLabel}</Text>
       )}
       <FlatList
         data={todoList}
         keyExtractor={item => `completed_${item.id}`}
         renderItem={({item}) => (
-          <View style={styles.completedStyles.todoItem}>
+          <View style={styles.completedScreen.todoItem}>
             <View>
-              <Text style={styles.completedStyles.todoTitle}>{item.title}</Text>
-              <Text style={styles.completedStyles.todoDescription}>
+              <Text style={styles.completedScreen.todoTitle}>{item.title}</Text>
+              <Text style={styles.completedScreen.todoDescription}>
                 {item.description ? item.description : noDescriptionLabel}
               </Text>
             </View>
-            <View style={styles.completedStyles.separator} />
-            <View style={styles.completedStyles.todoDatesContainer}>
+            <View style={styles.completedScreen.separator} />
+            <View style={styles.completedScreen.todoDatesContainer}>
               <Icon
                 name="plus"
-                color={styles.colors.yellow}
-                style={styles.completedStyles.todoDateIcon}
+                color={styles.colors.crimson}
+                style={styles.completedScreen.todoDateIcon}
               />
-              <Text style={styles.completedStyles.todoDateText}>
+              <Text style={styles.completedScreen.todoDateText}>
                 {item.createdOn}
               </Text>
             </View>
-            <View style={styles.completedStyles.todoDatesContainer}>
+            <View style={styles.completedScreen.todoDatesContainer}>
               <Icon
                 name="check"
-                color={styles.colors.lightgreen}
-                style={styles.completedStyles.todoDateIcon}
+                color={styles.colors.darkcyan}
+                style={styles.completedScreen.todoDateIcon}
               />
-              <Text style={styles.completedStyles.todoDateText}>
+              <Text style={styles.completedScreen.todoDateText}>
                 {item.completedOn}
               </Text>
             </View>
